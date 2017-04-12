@@ -24,8 +24,8 @@ services:
     restart: always
     hostname: 'gitlab.example.com'
     ports:
-      - '8080:8080'
-      - '8181:8181'
+      # - '8080:8080'
+      # - '8181:8181'
       - '2224:22'
     volumes:
       - gitlab-data:/var/opt/gitlab
