@@ -1,0 +1,6 @@
+[template]
+src = "gitlab.rb.tmpl"
+dest = "/etc/gitlab/gitlab.rb"
+keys = [
+    "/gitlab/settings",
+]

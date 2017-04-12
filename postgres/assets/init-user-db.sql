@@ -1,0 +1,6 @@
+CREATE USER gitlab;
+CREATE DATABASE gitlab;
+ALTER ROLE gitlab WITH PASSWORD 'gitlabpassword';
+GRANT ALL PRIVILEGES ON DATABASE gitlab TO gitlab;
+\c gitlab
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";

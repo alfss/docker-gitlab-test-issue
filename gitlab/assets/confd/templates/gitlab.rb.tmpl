@@ -1,0 +1,106 @@
+external_url '{{getv "/gitlab/settings/url" "ssh.host_example.com"}}'
+
+gitlab_rails['gitlab_ssh_host'] = '{{getv "/gitlab/settings/ssh/hostname" "ssh.host_example.com"}}'
+gitlab_rails['time_zone'] = '{{getv "/gitlab/settings/timezone" "UTC"}}'
+
+### GitLab Shell settings for GitLab
+gitlab_rails['gitlab_shell_ssh_port'] = {{getv "/gitlab/settings/ssh/shellport" "22"}}
+gitlab_rails['git_max_size'] = {{getv "/gitlab/settings/git/maxsize" "20971520"}}
+gitlab_rails['git_timeout'] = {{getv "/gitlab/settings/git/timeout" "10"}}
+
+### GitLab database settings
+###! Docs: https://docs.gitlab.com/omnibus/settings/database.html
+###! **Only needed if you use an external database.**
+gitlab_rails['db_adapter'] = "{{getv "/gitlab/settings/db/adapter" "postgresql"}}"
+gitlab_rails['db_encoding'] = "{{getv "/gitlab/settings/db/encoding" "unicode"}}"
+gitlab_rails['db_collation'] = "{{getv "/gitlab/settings/db/collation" "nil"}}"
+gitlab_rails['db_database'] = "{{getv "/gitlab/settings/db/database" "gitlab"}}"
+gitlab_rails['db_pool'] = {{getv "/gitlab/settings/db/pool" "10"}}
+gitlab_rails['db_username'] = "{{getv "/gitlab/settings/db/username" "gitlab"}}"
+gitlab_rails['db_password'] = "{{getv "/gitlab/settings/db/password" "gitlabpassword"}}"
+gitlab_rails['db_host'] = "{{getv "/gitlab/settings/db/host" "127.0.0.1"}}"
+gitlab_rails['db_port'] = {{getv "/gitlab/settings/db/port" "5432"}}
+gitlab_rails['db_socket'] = {{getv "/gitlab/settings/db/socket" "nil"}}
+gitlab_rails['db_sslmode'] = {{getv "/gitlab/settings/db/sslmode" "nil"}}
+gitlab_rails['db_sslrootcert'] = {{getv "/gitlab/settings/db/sslrootcert" "nil"}}
+gitlab_rails['db_prepared_statements'] = {{getv "/gitlab/settings/db/preparedstatements" "true"}}
+gitlab_rails['db_statements_limit'] = {{getv "/gitlab/settings/db/statementslimit" "1000"}}
+
+### GitLab Redis settings
+###! Connect to your own Redis instance
+###! Docs: https://docs.gitlab.com/omnibus/settings/redis.html
+
+#### Redis TCP connection
+gitlab_rails['redis_host'] = "{{getv "/gitlab/settings/redis/host" "127.0.0.1"}}"
+gitlab_rails['redis_port'] = {{getv "/gitlab/settings/redis/port" "6379"}}
+gitlab_rails['redis_password'] = {{getv "/gitlab/settings/redis/password" "nil"}}
+gitlab_rails['redis_database'] = {{getv "/gitlab/settings/redis/db" "0"}}
+
+### Email Settings
+gitlab_rails['gitlab_email_enabled'] = {{getv "/gitlab/settings/email/enabled" "true"}}
+gitlab_rails['gitlab_email_from'] = '{{getv "/gitlab/settings/email/from" "example@example.com"}}'
+gitlab_rails['gitlab_email_display_name'] = '{{getv "/gitlab/settings/email/displayname" "GitLab"}}'
+gitlab_rails['gitlab_email_reply_to'] = '{{getv "/gitlab/settings/email/replyto" "noreply@example.com"}}'
+
+{{if exists "/gitlab/settings/email/subjectsuffix"}}
+gitlab_rails['gitlab_email_subject_suffix'] = '{{getv "/gitlab/settings/email/subjectsuffix"}}'
+{{end}}
+
+
+### GitLab email server settings
+###! Docs: https://docs.gitlab.com/omnibus/settings/smtp.html
+###! **Use smtp instead of sendmail/postfix.**
+
+gitlab_rails['smtp_enable'] = {{getv "/gitlab/settings/smtp/enabled" "true"}}
+gitlab_rails['smtp_address'] = "{{getv "/gitlab/settings/smtp/address" "smtp.server"}}"
+gitlab_rails['smtp_port'] = {{getv "/gitlab/settings/smtp/port" "465"}}
+{{if exists "/gitlab/settings/smtp/username"}}
+gitlab_rails['smtp_user_name'] = "{{getv "/gitlab/settings/smtp/username"}}"
+{{end}}
+{{if exists "/gitlab/settings/smtp/password"}}
+gitlab_rails['smtp_password'] = "{{getv "/gitlab/settings/smtp/password"}}"
+{{end}}
+gitlab_rails['smtp_domain'] = "{{getv "/gitlab/settings/smtp/domain" "example.com"}}"
+gitlab_rails['smtp_authentication'] = "{{getv "/gitlab/settings/smtp/authentication" "login"}}"
+gitlab_rails['smtp_enable_starttls_auto'] = {{getv "/gitlab/settings/smtp/starttls" "true"}}
+gitlab_rails['smtp_tls'] = {{getv "/gitlab/settings/smtp/tls" "false"}}
+
+###! **Can be: 'none', 'peer', 'client_once', 'fail_if_no_peer_cert'**
+###! Docs: http://api.rubyonrails.org/classes/ActionMailer/Base.html
+gitlab_rails['smtp_openssl_verify_mode'] = '{{getv "/gitlab/settings/smtp/opensslverify" "none"}}'
+
+#Registry
+registry_external_url '{{getv "/gitlab/settings/registry/url" "https://registry.gitlab.example.com:5000"}}'
+
+
+web_server['external_users'] = ['www-data']
+gitlab_rails['trusted_proxies'] = ['{{getv "/gitlab/settings/trustedproxies" "172.16.0.0/12"}}']
+gitlab_workhorse['listen_network'] = "{{getv "/gitlab/settings/workhorse/listen/network" "tcp"}}"
+gitlab_workhorse['listen_addr'] = "{{getv "/gitlab/settings/workhorse/listen/addr" "0.0.0.0:8181"}}"
+
+
+unicorn['worker_timeout'] = {{getv "/gitlab/settings/unicorn/worker/timeout" "60"}}
+###! Minimum worker_processes is 2 at this moment
+###! See https://gitlab.com/gitlab-org/gitlab-ce/issues/18771
+unicorn['worker_processes'] = {{getv "/gitlab/settings/unicorn/worker/processes" "2"}}
+
+### Advanced settings
+unicorn['listen'] = '{{getv "/gitlab/settings/unicorn/listen" "0.0.0.0"}}'
+unicorn['port'] = {{getv "/gitlab/settings/unicorn/port" "8080"}}
+unicorn['pidfile'] = '{{getv "/gitlab/settings/unicorn/pidfile" "/opt/gitlab/var/unicorn/unicorn.pid"}}'
+unicorn['tcp_nopush'] = {{getv "/gitlab/settings/unicorn/tcpnopush" "true"}}
+unicorn['backlog_socket'] = {{getv "/gitlab/settings/unicorn/backlogsocket" "1024"}}
+
+###! **Make sure somaxconn is equal or higher then backlog_socket**
+unicorn['somaxconn'] = {{getv "/gitlab/settings/unicorn/somaxconn" "1024"}}
+
+
+
+
+registry['enable'] = false
+postgresql['enable'] = false
+redis['enable'] = false
+nginx['enable'] = false
+mattermost['enable'] = false
+prometheus['enable'] = false
+prometheus_monitoring['enable'] = false
